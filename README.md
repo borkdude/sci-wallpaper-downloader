@@ -1,10 +1,18 @@
 # Wallpaper downloader using the Small Clojure Interpreter on NodeJS
 
-A port of @yogthos's `gallery.cljs` [gist](https://gist.github.com/yogthos/d9d2324016f62d151c9843bdac3c0f23) to [sci](https://github.com/borkdude/sci) on NodeJS.
+A port of [yogthos](https://github.com/yogthos)'s wallpaper downloader [gist](https://gist.github.com/yogthos/d9d2324016f62d151c9843bdac3c0f23) to [sci](https://github.com/borkdude/sci) on NodeJS.
 
 ## Why this port?
 
 I wanted to examine the usability of [sci](https://github.com/borkdude/sci) on NodeJS.
+
+## Install
+
+First clone this repo. Then run `npm install`.
+
+## Run
+
+    node main.js
 
 ## License
 
