@@ -1,4 +1,4 @@
-# Wallpaper downloader using the Small Clojure Interpreter on NodeJS
+# sci-wallpaper-downloader
 
 A port of [yogthos](https://github.com/yogthos)'s wallpaper downloader [gist](https://gist.github.com/yogthos/d9d2324016f62d151c9843bdac3c0f23) to [sci](https://github.com/borkdude/sci) on NodeJS.
 
