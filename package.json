@@ -1,5 +1,5 @@
 {
-  "name": "windowsonearth-wallpaper-downloader",
+  "name": "sci-wallpaper-downloader",
   "version": "0.0.1-alpha.1",
   "description": "A port of yogthos's gist https://gist.github.com/yogthos/d9d2324016f62d151c9843bdac3c0f23 to the Small Clojure Interpreter on NodeJS. It downloads wallpapers from windowsonearth.org.",
   "main": "main.js",
