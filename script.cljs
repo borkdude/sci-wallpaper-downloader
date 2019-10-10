@@ -1,10 +1,7 @@
 ;; This code is based on this gist: https://gist.github.com/yogthos/d9d2324016f62d151c9843bdac3c0f23
 
 (require '[clojure.string :as string])
-
-;; provided by bindings:
-(declare parseJSON, saveFile, fileExists, getUrl, promise, thenP, catchP,
-         promiseAll, on, error)
+(require '[node.interop :as i])
 
 (defn page [gallery-url page-number]
   (string/replace gallery-url #"PageNumber=\d+&" (str "PageNumber=" page-number "&")))
@@ -21,8 +18,8 @@
        :file-name file-name})))
 
 (defn follow-redirects [url cb]
-  (println "follow redirects" url)
-  (getUrl
+  (i/log "follow redirects" url)
+  (i/getUrl
    url
    (fn [res]
      (let [location (aget (aget res "headers") "location")]
@@ -34,47 +31,47 @@
   (follow-redirects
    url
    (fn [res]
-     (println "saving" url)
-     (saveFile file-name res cb))))
+     (i/log "saving" url)
+     (i/saveFile file-name res cb))))
 
 (defn save-links [[link & links]]
   (when link
-    (if (fileExists (:file-name link))
+    (if (i/fileExists (:file-name link))
       (do
-        (println "skipping" (:file-name link))
+        (i/log "skipping" (:file-name link))
         (save-links links))
       (save-file link #(save-links links)))))
 
 (defn parse-page [url]
   (fn [resolve _reject]
-    (getUrl url
-            (fn [res]
-              (let [body (atom "")]
-                (-> res
-                    (on "data" #(swap! body str (str %)))
-                    (on "end" (fn end []
-                                (-> @body
-                                    parseJSON
-                                    (js->clj :keywordize-keys true)
-                                    resolve)))))))))
+    (i/getUrl url
+              (fn [res]
+                (let [body (atom "")]
+                  (-> res
+                      (i/on "data" #(swap! body str (str %)))
+                      (i/on "end" (fn end []
+                                    (-> @body
+                                        i/parseJSON
+                                        (js->clj :keywordize-keys true)
+                                        resolve)))))))))
 
 (defn parse-image-links [pages]
-  (-> (map #(promise (parse-page %)) pages)
-      (promiseAll)
-      (thenP #(->> %
-                   (map :Images)
-                   (apply concat)
-                   (map parse-image-url)
-                   set
-                   save-links))
-      (catchP error)))
+  (-> (map #(i/promise (parse-page %)) pages)
+      (i/promiseAll)
+      (i/thenP #(->> %
+                     (map :Images)
+                     (apply concat)
+                     (map parse-image-url)
+                     set
+                     save-links))
+      (i/catchP i/error)))
 
 (defn parse-gallery [url {:keys [TotalItems TotalPages]}]
-  (println "gallery contains" TotalPages "pages with" TotalItems "images")
+  (i/log "gallery contains" TotalPages "pages with" TotalItems "images")
   (parse-image-links (map (partial page url) (range TotalPages))))
 
 (defn parse-url [url]
-  (println "parsing" url)
-  (-> (promise (parse-page url))
-      (thenP #(parse-gallery url (:Pagination %)))
-      (catchP error)))
+  (i/log "parsing" url)
+  (-> (i/promise (parse-page url))
+      (i/thenP #(parse-gallery url (:Pagination %)))
+      (i/catchP i/error)))
