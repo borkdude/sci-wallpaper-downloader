@@ -66,7 +66,7 @@ const sciOptions = {
 const script = fs.readFileSync('script.cljs').toString();
 
 // evaluating the script returns a CLJS function with metadata. To unwrap it, we use toJS.
-const parseUrl = toJS(evalString(script, sciOptions));
+const parseUrl = evalString(script, sciOptions);
 
 // this is the URL where we start crawling
 const startUrl = 'https://www.windowsonearth.org/services/api/json/1.4.0/?galleryType=album&albumId=37434732&albumKey=TBQqg7&nodeId=FDP9N&PageNumber=0&imageId=0&imageKey=&returnModelList=true&PageSize=16&imageSizes=L%2CXL&method=rpc.gallery.getalbum';
