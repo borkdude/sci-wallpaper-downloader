@@ -44,7 +44,6 @@ function on(obj,name,cb) {
   return obj.on(name, toJS(cb));
 }
 
-
 // we're creating a environment, so sci will remember evaluations over multiple
 // calls to evalString:
 const env = evalString("(atom)");
