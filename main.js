@@ -44,6 +44,8 @@ function on(obj,name,cb) {
   return obj.on(name, toJS(cb));
 }
 
+const env = evalString("(atom)");
+
 const sciOptions = {
   namespaces: {
     "node.interop": {
@@ -57,16 +59,20 @@ const sciOptions = {
       promiseAll: promiseAll,
       on: on,
       log: console.log,
-      error: console.error
+      error: console.error,
+      toJS: toJS
     }
-  }
+  },
+  env: env
 };
 
 // read the Clojure script from disk
 const script = fs.readFileSync('script.cljs').toString();
 
 // evaluating the script returns a CLJS function with metadata. To unwrap it, we use toJS.
-const parseUrl = evalString(script, sciOptions);
+evalString(script, sciOptions);
+
+const parseUrl = toJS(evalString("user/parse-url", sciOptions));
 
 // this is the URL where we start crawling
 const startUrl = 'https://www.windowsonearth.org/services/api/json/1.4.0/?galleryType=album&albumId=37434732&albumKey=TBQqg7&nodeId=FDP9N&PageNumber=0&imageId=0&imageKey=&returnModelList=true&PageSize=16&imageSizes=L%2CXL&method=rpc.gallery.getalbum';
